@@ -4,32 +4,36 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
-export async function POST(req) {
+export async function POST(request) {
   try {
-    const { prompt } = await req.json();
+    const { prompt } = await request.json();
 
-    if (!prompt || prompt.trim().length === 0) {
-      return new Response(
-        JSON.stringify({ error: "Prompt cannot be empty" }),
-        { status: 400 }
-      );
+    if (!prompt) {
+      return new Response(JSON.stringify({ error: "No prompt provided" }), {
+        status: 400,
+      });
     }
 
     const completion = await openai.chat.completions.create({
       model: "gpt-4o-mini",
       messages: [
-        { role: "system", content: "You are a coding assistant that outputs clean code." },
+        { role: "system", content: "You are a helpful AI that writes clean code." },
         { role: "user", content: prompt },
       ],
     });
 
-    const result = completion.choices[0].message.content;
-    return new Response(JSON.stringify({ output: result }), { status: 200 });
+    const output = completion.choices[0].message.content;
+
+    return new Response(JSON.stringify({ output }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
   } catch (error) {
-    console.error("Error generating response:", error);
-    return new Response(
-      JSON.stringify({ error: "Failed to generate output" }),
-      { status: 500 }
-    );
+    console.error("API error:", error);
+    return new Response(JSON.stringify({ error: error.message }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }
+
