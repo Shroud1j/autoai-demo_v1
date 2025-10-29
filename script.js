@@ -1,24 +1,18 @@
-async function generate() {
-  const prompt = document.getElementById('prompt').value;
-  const output = document.getElementById('output');
-
-  if (!prompt.trim()) {
-    output.innerText = 'Please type something first.';
-    return;
-  }
-
-  output.innerText = 'Thinking...';
+document.getElementById("generateBtn").addEventListener("click", async () => {
+  const prompt = document.getElementById("promptInput").value.trim();
+  const outputBox = document.getElementById("output");
+  outputBox.textContent = "Generating...";
 
   try {
-    const response = await fetch('/api/generate', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt })
+    const res = await fetch("/api/generate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ prompt }),
     });
 
-    const data = await response.json();
-    output.innerText = data.output || 'No response.';
-  } catch (error) {
-    output.innerText = 'Error: ' + error.message;
+    const data = await res.json();
+    outputBox.textContent = data.output || data.error || "No output.";
+  } catch (err) {
+    outputBox.textContent = "Error: " + err.message;
   }
-}
+});
