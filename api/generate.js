@@ -1,16 +1,22 @@
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
   const { prompt } = req.body;
 
-  if (!prompt || prompt.trim().length === 0) {
-    return res.status(400).json({ error: 'Prompt is required' });
-  }
+  // Connect to OpenAI
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${process.env.OPENAI_API_KEY}`
+    },
+    body: JSON.stringify({
+      model: "gpt-4o-mini",
+      messages: [
+        { role: "system", content: "You are a helpful AI that generates code or ideas for building apps." },
+        { role: "user", content: prompt }
+      ]
+    })
+  });
 
-  // Dummy AI response for now (you can connect to an API later)
-  const fakeOutput = `AI Response: I’d build something amazing based on "${prompt}".`;
-
-  res.status(200).json({ output: fakeOutput });
+  const data = await response.json();
+  res.status(200).json({ output: data.choices?.[0]?.message?.content || "No output." });
 }
