@@ -4,7 +4,6 @@ export async function POST(req) {
   try {
     const { prompt } = await req.json();
 
-    // safety check
     if (!prompt || prompt.trim() === "") {
       return NextResponse.json(
         { error: "Prompt is required" },
@@ -12,7 +11,9 @@ export async function POST(req) {
       );
     }
 
-    // use OpenAI API
+    // Debug log (only runs on server)
+    console.log("🔑 OPENAI_API_KEY exists:", !!process.env.OPENAI_API_KEY);
+
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
       headers: {
@@ -32,10 +33,9 @@ export async function POST(req) {
       }),
     });
 
-    // check if OpenAI failed
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("OpenAI API error:", errorText);
+      console.error("❌ OpenAI API error:", errorText);
       return NextResponse.json(
         { error: "OpenAI API request failed", details: errorText },
         { status: 500 }
@@ -47,11 +47,12 @@ export async function POST(req) {
 
     return NextResponse.json({ output });
   } catch (err) {
-    console.error("Server Error:", err);
+    console.error("💥 Server Error:", err);
     return NextResponse.json(
       { error: "Internal server error", details: err.message },
       { status: 500 }
     );
   }
 }
+
 
