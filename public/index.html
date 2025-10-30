@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Weather App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #89f7fe, #66a6ff);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      color: #222;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      text-align: center;
+      width: 300px;
+    }
+
+    input {
+      width: 80%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #0056b3;
+    }
+
+    #result {
+      margin-top: 15px;
+      font-size: 1.1em;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Weather App</h2>
+    <input type="text" id="cityInput" placeholder="Enter city" />
+    <button onclick="getWeather()">Get Weather</button>
+    <div id="result"></div>
+  </div>
+
+  <script>
+    async function getWeather() {
+      const city = document.getElementById("cityInput").value.trim();
+      if (!city) {
+        alert("Enter a city name first!");
+        return;
+      }
+
+      const result = document.getElementById("result");
+      result.textContent = "Loading...";
+
+      try {
+        const res = await fetch(`/api/generate?city=${encodeURIComponent(city)}`);
+        if (!res.ok) throw new Error("API error");
+        const data = await res.json();
+        result.textContent = `🌤 ${data.weather || data.message}`;
+      } catch (err) {
+        result.textContent = "Error fetching weather data.";
+      }
+    }
+  </script>
+</body>
+</html>
