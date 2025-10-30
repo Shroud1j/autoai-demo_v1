@@ -1,85 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weather App</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(120deg, #89f7fe, #66a6ff);
-      height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      color: #222;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AutoAI Demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.4/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="bg-gray-900 text-white flex flex-col items-center p-10">
+    <h1 class="text-3xl font-bold mb-6">AutoAI Code Generator</h1>
+    <textarea
+      id="prompt"
+      placeholder="Describe what you want to build..."
+      class="w-full max-w-2xl h-40 text-black p-4 rounded-lg"
+    ></textarea>
+    <button
+      id="generate"
+      class="mt-4 bg-blue-600 px-6 py-2 rounded-lg hover:bg-blue-500"
+    >
+      Generate
+    </button>
+    <pre
+      id="output"
+      class="mt-6 w-full max-w-2xl bg-gray-800 p-4 rounded-lg overflow-auto text-sm"
+    ></pre>
 
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      text-align: center;
-      width: 300px;
-    }
-
-    input {
-      width: 80%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-
-    button {
-      margin-top: 10px;
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      background: #007bff;
-      color: white;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background: #0056b3;
-    }
-
-    #result {
-      margin-top: 15px;
-      font-size: 1.1em;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Weather App</h2>
-    <input type="text" id="cityInput" placeholder="Enter city" />
-    <button onclick="getWeather()">Get Weather</button>
-    <div id="result"></div>
-  </div>
-
-  <script>
-    async function getWeather() {
-      const city = document.getElementById("cityInput").value.trim();
-      if (!city) {
-        alert("Enter a city name first!");
-        return;
-      }
-
-      const result = document.getElementById("result");
-      result.textContent = "Loading...";
-
-      try {
-        const res = await fetch(`/api/generate?city=${encodeURIComponent(city)}`);
-        if (!res.ok) throw new Error("API error");
-        const data = await res.json();
-        result.textContent = `🌤 ${data.weather || data.message}`;
-      } catch (err) {
-        result.textContent = "Error fetching weather data.";
-      }
-    }
-  </script>
-</body>
+    <script src="./script.js"></script>
+  </body>
 </html>
+
