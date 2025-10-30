@@ -18,7 +18,7 @@ button.addEventListener("click", async () => {
       return;
     }
 
-    const data = await res.json();
+    const data = await res.json().catch(() => null);
     output.textContent = data.output || "⚠️ No response.";
   } catch (e) {
     output.textContent = `💥 Fetch failed: ${e.message}`;
