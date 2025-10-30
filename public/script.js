@@ -1,23 +1,26 @@
-async function generateCode() {
-  const prompt = document.getElementById("prompt").value;
-  const outputDiv = document.getElementById("output");
-  outputDiv.innerText = "Generating...";
+const button = document.getElementById("generate");
+const output = document.getElementById("output");
+
+button.addEventListener("click", async () => {
+  const prompt = document.getElementById("prompt").value.trim();
+  output.textContent = "⏳ Generating code...";
 
   try {
-    const response = await fetch("/api/generate", {
+    const res = await fetch("/api/generate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ prompt }),
     });
 
-    const data = await response.json();
-
-    if (data.error) {
-      outputDiv.innerText = `Error: ${data.error}`;
-    } else {
-      outputDiv.innerText = data.result;
+    if (!res.ok) {
+      const err = await res.text();
+      output.textContent = `❌ Server Error: ${err}`;
+      return;
     }
-  } catch (err) {
-    outputDiv.innerText = `Error: ${err.message}`;
+
+    const data = await res.json();
+    output.textContent = data.output || "⚠️ No response.";
+  } catch (e) {
+    output.textContent = `💥 Fetch failed: ${e.message}`;
   }
-}
+});
